@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductsController;
@@ -20,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('/products', ProductController::class);
-
+Route::resource('/categories', CategoryController::class);
 Auth::routes();
 
 Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');

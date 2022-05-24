@@ -21,6 +21,9 @@ class CreateProductsTable extends Migration
             $table->string('image');
             $table->timestamps();
         });
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreignId('category_id')->nullable()->constrained('categories');
+        });
     }
 
     /**
