@@ -32,3 +32,5 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/home/{id}', [HomeController::class, 'filterByCategory'])->name('filter_product_by_category');
 
 Route::post('/cart', [CartsController::class, 'store'])->name('cart');
+Route::get('/checkout', [CartsController::class, 'index'])->name('checkout');
+Route::get('/checkout/get/items', [CartsController::class, 'getCartItemsForCheckout']);

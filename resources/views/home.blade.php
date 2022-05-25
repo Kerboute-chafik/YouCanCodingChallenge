@@ -2,6 +2,7 @@
 
 @section('content')
 
+
     {{--    <div class="content-wrapper">--}}
     {{--        <div class="container">--}}
     {{--            <div class="row">--}}
@@ -49,7 +50,20 @@
     {{--    </div>--}}
     <section>
         <div class="container">
-
+            <nav class="navbar navbar-expand-lg bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Categories :</a>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            @foreach($categories as $category)
+                                <li class="nav-item">
+                                    <a href="{{ route('filter_product_by_category',['id' => $category->id]) }}" class="nav-link">{{ $category->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </nav>
             <div class="p-b-10">
                 <h3 class="ltext-103 cl5">
                     Product Overview

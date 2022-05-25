@@ -18,7 +18,7 @@ class CartsController extends Controller
      */
     public function index()
     {
-
+        return view('pages.checkout');
     }
 
     /**
@@ -57,4 +57,39 @@ class CartsController extends Controller
             return ['message' => 'Cart Updated', 'items' => Cart::where('user_id', auth()->user()->id)->sum('quantity'),];
         }
     }
+
+    /**
+     *
+     */
+    public function getCartItemsForCheckout()
+    {
+
+        $cartItems = Cart::with('product')->where('user_id', auth()->user()->id)->get();
+
+        $finalData = [];
+
+        $amount = 0;
+
+
+        if (isset($cartItems)) {
+            foreach ($cartItems as $cartItem) {
+                if ($cartItem->product) {
+                    foreach ($cartItem->product as $cartProduct) {
+                        if ($cartProduct->id == $cartItem->product_id) {
+                            $finalData[$cartItem->product_id]['id'] = $cartProduct->id;
+                            $finalData[$cartItem->product_id]['name'] = $cartProduct->name;
+                            $finalData[$cartItem->product_id]['quantity'] = $cartItem->quantity;
+                            $finalData[$cartItem->product_id]['price'] = $cartItem->price;
+                            $finalData[$cartItem->product_id]['total'] = $cartItem->price * $cartItem->quantity;
+                            $amount += $cartItem->price * $cartItem->quantity;
+                            $finalData['totalAmount'] = $amount;
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json($finalData);
+    }
+
 }
