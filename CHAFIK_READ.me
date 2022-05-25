@@ -1,0 +1,371 @@
+Hello this is Chafik tutorial on how to create a simple LARAVEL app
+
+                                                        CRUD
+
+Step 1 : Install Laravel (composer create-project --prefer-dist laravel/laravel Project_name)
+Step 2: Database Configuration (In the .ENV file)
+    {
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=here your database name(Project_name)
+    DB_USERNAME=here database username(root)
+    DB_PASSWORD=here database password(root)
+    }
+Step 3: Create Migration
+{
+    we are going to create crud application for product. so we have to create migration for "products"/"categories" .... table using Laravel  php artisan command,
+    so first fire bellow command(the example bellow is for product):
+
+    - php artisan make:migration create_products_table --create=products
+
+    After this command you will find one file in following path "database/migrations" Make sure to add your Table fields before migrating to DB ,Can be somthing like :
+
+      public function up()
+        {
+            Schema::create('products', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->text('description');
+                $table->decimal('price');
+                $table->string('image');
+                $table->timestamps();
+            });
+        }
+         public function down()
+            {
+                Schema::dropIfExists('products');
+            }
+
+    Now you have to run this migration by following command:
+
+    - php artisan migrate
+}
+Step 4: Add Resource Route
+    Here, we need to add resource route for product crud application. so open your "routes/web.php" file and add following route
+    Route::resource('products', ProductController::class);
+
+Step 5: Add Controller and Model
+    now we should create new controller as ProductController. in this controller we write logic to store image, we store images in "images" folder of public folder
+
+    php artisan make:controller ProductController --resource --model=Product
+
+    In this controller will create seven methods by default as bellow methods:
+
+    1)index() { Display a listing of the resource }
+    2)create() { Show the form for creating a new resource }
+    3)store() { Store a newly created resource in storage }
+    4)show() { Display the specified resource }
+    5)edit() { Show the form for editing the specified resource }
+    6)update() { Update the specified resource in storage }
+    7)destroy() { Remove the specified resource from storage }
+
+    so after run bellow command you will find "app/Models/Product.php" and put bellow content in Product.php file:
+
+     use HasFactory;
+
+        protected $fillable = [
+            'name', 'detail', 'image'
+        ];
+
+Step 6: Add Blade Files
+    In this step we have to create just blade files. I created new directory called products and then inside the directory i created Blade filed for my crud app
+
+    1) layout.blade.php
+    2) index.blade.php
+    3) create.blade.php
+    4) edit.blade.php
+    5) show.blade.php
+
+    Now we are ready to run our crud application By using the command : php artisan serve
+
+
+                                                    AUTH
+Step 1: Update Migration and Model
+   To Create AUTH with roles u need to add is_admin to users table
+
+        $table->boolean('is_admin')->nullable();
+
+   Then the fillables inside Models\user
+
+          protected $fillable = [
+                'name', 'email', 'password', 'is_admin'
+            ];
+
+    Now we need to run migration by running the command : php artisan migrate
+
+Step 2: Create Auth using scaffold
+    we will create auth scaffold command to create login, register and dashboard. so run following commands:
+                                            UI Package
+        composer require laravel/ui
+                                            Generate auth
+     -   php artisan ui bootstrap --auth (if you want to use VUE auth then run the command : php artisan ui vue --auth)
+     -   npm install
+     -   npm run dev
+
+Step 3: Create IsAdmin Middleware
+    we require to create admin middleware that will allows only admin access users to that routes ,let's create admin user with following steps.
+
+     -   php artisan make:middleware IsAdmin
+    Inside the app/Http/middleware/IsAdmin.php Add the following
+
+     public function handle($request, Closure $next)
+        {
+            if(auth()->user()->is_admin == 1){
+                return $next($request);
+            }
+
+            return redirect(‘home’)->with(‘error’,"You don't have admin access.");
+        }
+   And we need to add the is_admin field to our kernel.php (app/Http/Kernel.php)
+
+      'is_admin' => \App\Http\Middleware\IsAdmin::class,
+
+Step 4: Create Route
+    we need to add one more route for admin user home page so let's add that route in web.php file.
+
+     Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');
+
+Step 5: Add Method on Controller
+
+    we need add adminHome() method for admin route in HomeController. so let's add like as bellow:
+
+        public function adminHome()
+            {
+                return view('adminPanel');
+            }
+
+Step 6: Create Blade file
+        we need one blade file for normla users and another one for Admin users
+            resources/views/home.blade.php
+            resources/views/adminpanel.blade.php
+
+Step 7: Update on LoginController
+        we will change on LoginController, when user will login than we redirect according to user access. if normal user than we will redirect to home route and if admin user than we redirect to admin route
+
+         public function login(Request $request)
+           {
+               $input = $request->all();
+
+               $this->validate($request, [
+                   'email' => 'required|email',
+                   'password' => 'required',
+               ]);
+
+               if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
+               {
+                   if (auth()->user()->is_admin == 1) {
+
+                       return redirect()->route('admin.home');
+                   }else{
+                       return redirect()->route('home');
+                   }
+               }else{
+                   return redirect()->route('login')
+                       ->with('error','Email-Address And Password Are Wrong.');
+               }
+
+           }
+
+Step 8: Create Seeder
+        Seeders are like dump data used in DEV mode to preview the process of our app.
+        We will create seeder for create new admin and normal user (same as for category and product)
+
+        - php artisan make:seeder CreateUsersSeeder
+      public function run()
+        {
+            $user = [
+                [
+                   'name'=>'Admin',
+                   'email'=>'admin@gmail.com',
+                    'is_admin'=>'1',
+                   'password'=> bcrypt('123456789'),
+                ],
+                [
+                   'name'=>'User',
+                   'email'=>'user@gmail.com',
+                    'is_admin'=>'0',
+                   'password'=> bcrypt('123456789'),
+                ],
+            ];
+
+            foreach ($user as $key => $value) {
+                User::create($value);
+            }
+        }
+
+       Now let's run seeder:
+
+            php artisan db:seed --class=CreateUsersSeeder
+
+                                                            FILTER BY CATEGORY
+
+      Now we will advance in creating our Category Filter when listing Products in home page to do so .
+      in general we need To pass the argument in our url so we can filter our data URL will look something like this
+             http://127.0.0.1:8000/home/3
+      The number "3" referce to Category Id , so basically we need to know the category id in order to run our queries that filters our data
+Step 1:
+       We need To add  FilterByCategory (with Request dependency ingection to get param from the url ) the method inside our HomeController
+
+       public function filterByCategory(Request $request)
+                          {
+                              $products = Product::where('category_id',$request->id)->get();
+                              $categories = Category::all();
+                              return view('home',compact('products','categories'));
+                          }
+step 2:
+        we need to create Route for Filtred data inside WEB.php
+
+           Route::get('/home/{id}', [HomeController::class, 'filterByCategory'])->name('filter_product_by_category');
+
+        #the /{id} referce to category Id
+
+step 3:
+       now we have to loop by products inside our blade to get every Product  and same for Categories
+        @foreach($categories as $category)
+           <li class="nav-item">
+                 <a href="{{ route('filter_product_by_category',['id' => $category->id]) }}" class="nav-link">{{ $category->name }}</a>
+           </li>
+        @endforeach
+
+        we referenced the Clicks on categories to route('filter_product_by_category') where we passed category id as externel element so it can filter our data
+
+                                                                 VUEjs Component
+
+        Now let's create a vue componenet addTocCart button example
+Step 1:
+        To use Vue in your laravel application you need to install it in our app by running the following command
+            composer install vue
+        this command will install all dependecies needed for vue
+step 2:
+        Inside out Webpack.mix.js we need to add vue() like the following :
+            mix.js('resources/js/app.js', 'public/js')
+                .vue()
+                .sass('resources/sass/app.scss', 'public/css')
+                .sourceMaps();
+        This indicated where are the compiled files
+
+step 3:
+        Inside Ressources/js add the directory component where we will create our component AddToCart.vue
+        Then go to app.js and add the following :
+
+                window.Vue = require('vue').default;
+                import Vue from "vue";
+                import VueToastr from "vue-toastr";
+                Vue.use(VueToastr);
+                Vue.component('add-to-cart-button', require('./components/AddToCart.vue').default);
+
+                const app = new Vue({
+                    el: '#app',
+                });
+        (VueToastr is for Notification (success,eeror .....))
+
+step 4:
+        now we need to create code for our component
+
+        <template>
+            <div>
+                <button class="btn btn-warning text-center"
+                        v-on:click.prevent="addProductToCart()">
+                    Add To Cart
+                </button>
+            </div>
+
+        </template>
+        <script>
+        export default {
+            data(){
+                return {
+
+                }
+            },
+            props:['productId', 'userId'],
+            methods:{
+                async addProductToCart(){
+                    // Checking if user logged in.
+                    if(this.userId == 0){
+                        this.$toastr.e('You Need to login, To add this product in Cart');
+                        return;
+                    }
+                    // If user logged in then add item to cart.
+                    let response = await axios.post('/cart', {
+                        'product_id': this.productId
+                    });
+                    this.$root.$emit('changeInCart', response.data.items)
+
+                }
+            },
+            mounted() {
+                console.log('Component mounted.')
+            }
+        }
+        </script>
+
+step 5:
+         Now that we have Our componenet ready we need to add it to our products looping then we need to compile the files by the following command
+            npm run dev
+
+          @foreach($products as $product)
+                                 .
+                                 .
+                                 .
+                                 .
+                                 .
+                                 .
+            <add-to-cart-button product-id="{{$product->id}}" user-id="{{auth()->user()->id ?? 0}}"/>
+
+          @endforeach
+
+
+                                                        PHP ARTISAN COMMAND
+         Now we want to create our custom artisan command here is an example for category:create command
+Step 1:
+         first fire bellow command and create console class file.
+
+            php artisan make:console CategoryCommand --command=Category:create
+
+         After this command you can find one file CategoryCommand class in console directory(app/Console/Commands/CategoryCommand.php)
+step 2:
+        we have to add signature of the command
+
+            protected $signature = 'category:create';
+
+        and then method handle that will execute the console command and Add user input name to category table
+
+         public function handle()
+            {
+              $input['name'] = $this->ask('What is the category name?');
+              DB::table('categories')->insert($input);
+              $this->info('Category Create Successfully.');
+            }
+Step 3:
+        Ok, now we need to register this command class in Kernel.php file (app/Console/Kernel.php)
+
+             protected $commands = [
+                    Commands\CategoryCommand::class,
+                ];
+
+        we can use  - php artisan list to list all console commands
+
+                                                                Github
+Here is a githublink for this example project https://github.com/Kerboute-chafik/YouCanCodingChallenge
+
+    (I left The .env file with base config (always use gitignore to remove .env and all sensitive data in Production mode))
+    to use it First off Clone project to your directory by running in your terminal
+
+        git clone https://github.com/Kerboute-chafik/YouCanCodingChallenge
+
+    after that use code . command to start the project in your VS idea
+
+    now that you have the project in ur idea we need to install all the dependencies needed to run laravel project
+        to do so we use the following command :
+            Composer install
+    after that you need to create the db and then migrate the migrations so you will have the tables inside you DB with dumb data if you want to use seeders
+    and then we need to use (npm run dev) to compile the files
+
+   Ah! Dont forget (php artisan serve) to lunch your local
+
+                                                          Thanks for your attention :)
+                                                                Enjoy Your Day
+                                                           Chafik Kerboute YouCan test
+
