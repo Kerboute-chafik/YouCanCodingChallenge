@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ProductFilter;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -20,6 +22,14 @@ class ProductController extends Controller
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
+    public function scopeFilter(Builder $builder, $request)
+    {
+        return (new ProductFilter($request))->filter($builder);
+    }
+    public function filter(Request $request)
+    {
+        return Product::filter($request)->get();
+    }
     /**
      * Show the form for creating a new resource.
      *

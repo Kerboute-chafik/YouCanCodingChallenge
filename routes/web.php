@@ -22,7 +22,10 @@ Route::get('/', function () {
 });
 Route::resource('/products', ProductController::class);
 Route::resource('/categories', CategoryController::class);
+
+
 Auth::routes();
 
 Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home/{id}', [HomeController::class, 'filterByCategory'])->name('filter_product_by_category');
