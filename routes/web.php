@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -29,3 +30,5 @@ Auth::routes();
 Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/home/{id}', [HomeController::class, 'filterByCategory'])->name('filter_product_by_category');
+
+Route::post('/cart', [CartsController::class, 'store'])->name('cart');
