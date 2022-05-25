@@ -32,29 +32,24 @@ class CartsController extends Controller
         if (!$request->get('product_id')) {
             return ['message' => 'Cart items returned', 'items' => Cart::where('user_id', auth()->user()->id)->sum('quantity'),];
         }
-
-
         // Getting product details.
-
         $product = Product::where('id', $request->get('product_id'))->first();
-
         $productFoundInCart = Cart::where('product_id', $request->get('product_id'))->pluck('id');
-
 
         if ($productFoundInCart->isEmpty()) {
             // Adding Product in cart.
-
             $cart = Cart::create(['product_id' => $product->id, 'quantity' => 1, 'price' => $product->price, 'user_id' => auth()->user()->id,]);
         } else {
             // Incrementing Product Quantity.
-
             $cart = Cart::where('product_id', $request->get('product_id'))->increment('quantity');
         }
 
         // Check user cart items.
-
         if ($cart) {
-            return ['message' => 'Cart Updated', 'items' => Cart::where('user_id', auth()->user()->id)->sum('quantity'),];
+            return [
+                'message' => 'Cart Updated',
+                'items' => Cart::where('user_id', auth()->user()->id)->sum('quantity'),
+                ];
         }
     }
 
@@ -128,7 +123,9 @@ class CartsController extends Controller
         $stripe = Stripe::make(env('STRIPE_KEY'));
 
 
-        $token = $stripe->tokens()->create(['card' => ['number' => $cardNumber, 'exp_month' => $expirationMonth, 'exp_year' => $expirationYear, 'cvc' => $cvv,]]);
+        $token = $stripe->tokens()->create([
+            'card' => ['number' => $cardNumber, 'exp_month' => $expirationMonth, 'exp_year' => $expirationYear, 'cvc' => $cvv,]
+        ]);
 
         if (!$token['id']) {
             session()->flush('error', 'Stripe Token generation failed');
@@ -137,12 +134,38 @@ class CartsController extends Controller
 
         // Create a customer stripe.
 
-        $customer = $stripe->customers()->create(['name' => $firstName . ' ' . $lastName, 'email' => $email, 'phone' => $phone, 'address' => ['line1' => $address, 'postal_code' => $zipCode, 'city' => $city, 'state' => $state, 'country' => $country,], 'shipping' => ['name' => $firstName . ' ' . $lastName, 'address' => ['line1' => $address, 'postal_code' => $zipCode, 'city' => $city, 'state' => $state, 'country' => $country,],], 'source' => $token['id'],]);
+        $customer = $stripe->customers()->create([
+            'name' => $firstName . ' ' . $lastName,
+            'email' => $email,
+            'phone' => $phone,
+            'address' => [
+                'line1' => $address,
+                'postal_code' => $zipCode,
+                'city' => $city,
+                'state' => $state,
+                'country' => $country,
+                ],
+            'shipping' => [
+                'name' => $firstName . ' ' . $lastName,
+                'address' => ['line1' => $address,
+                    'postal_code' => $zipCode,
+                    'city' => $city,
+                    'state' => $state,
+                    'country' => $country,
+                    ],
+                ],
+            'source' => $token['id'],
+            ]);
 
 
         // Code for charging the client in Stripe.
 
-        $charge = $stripe->charges()->create(['customer' => $customer['id'], 'currency' => 'MAD', 'amount' => $amount, 'description' => 'Payment for order',]);
+        $charge = $stripe->charges()->create([
+            'customer' => $customer['id'],
+            'currency' => 'MAD',
+            'amount' => $amount,
+            'description' => 'Payment for order',
+            ]);
 
         if ($charge['status'] == "succeeded") {
             // Capture the details from stripe.
@@ -151,7 +174,20 @@ class CartsController extends Controller
             $amountRec = $charge['amount'];
             $client_id = auth()->user()->id;
 
-            $processingDetails = Processing::create(['client_id' => $client_id, 'client_name' => $firstName . ' ' . $lastName, 'client_address' => json_encode(['line1' => $address, 'postal_code' => $zipCode, 'city' => $city, 'state' => $state, 'country' => $country,]), 'order_details' => json_encode($ordersArray), 'amount' => $amount, 'currency' => $charge['currency'],]);
+            $processingDetails = Processing::create([
+                'client_id' => $client_id,
+                'client_name' => $firstName . ' ' . $lastName,
+                'client_address' => json_encode([
+                    'line1' => $address,
+                    'postal_code' => $zipCode,
+                    'city' => $city,
+                    'state' => $state,
+                    'country' => $country,
+                    ]),
+                'order_details' => json_encode($ordersArray),
+                'amount' => $amount,
+                'currency' => $charge['currency'],
+                ]);
 
 
             if ($processingDetails) {

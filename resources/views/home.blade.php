@@ -57,7 +57,8 @@
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             @foreach($categories as $category)
                                 <li class="nav-item">
-                                    <a href="{{ route('filter_product_by_category',['id' => $category->id]) }}" class="nav-link">{{ $category->name }}</a>
+                                    <a href="{{ route('filter_product_by_category',['id' => $category->id]) }}"
+                                       class="nav-link">{{ $category->name }}</a>
                                 </li>
                             @endforeach
                         </ul>

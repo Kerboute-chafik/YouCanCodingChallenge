@@ -9,18 +9,16 @@
 </template>
 <script>
 export default {
-    data(){
-        return {
-
-        }
+    data() {
+        return {}
     },
-    props:['productId', 'userId'],
-    methods:{
-        async addProductToCart(){
+    props: ['productId', 'userId'],
+    methods: {
+        async addProductToCart() {
 
             // Checking if user logged in.
 
-            if(this.userId == 0){
+            if (this.userId == 0) {
                 this.$toastr.e('You Need to login, To add this product in Cart');
                 return;
             }

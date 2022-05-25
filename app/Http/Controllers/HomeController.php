@@ -28,15 +28,17 @@ class HomeController extends Controller
         $products = Product::all();
         $categories = Category::all();
 
-        return view('home',['products' => $products, 'categories' => $categories]);
+        return view('home', [
+            'products' => $products,
+            'categories' => $categories
+        ]);
     }
 
     public function filterByCategory(Request $request)
     {
-
-        $products = Product::where('category_id',$request->id)->get();
+        $products = Product::where('category_id', $request->id)->get();
         $categories = Category::all();
-        return view('home',compact('products','categories'));
+        return view('home', compact('products', 'categories'));
     }
 
     /**

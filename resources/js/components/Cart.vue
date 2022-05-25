@@ -3,7 +3,7 @@
         <li class="nav-item">
             <a href="/checkout"
                class="btn btn-warning btn-sm">
-                Cart {{itemCount}}
+                Cart {{ itemCount }}
             </a>
         </li>
     </div>
@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    data(){
+    data() {
         return {
             itemCount: '',
         }
@@ -21,13 +21,13 @@ export default {
             this.itemCount = item;
         })
     },
-    methods:{
-        async getCartItemsOnPageLoad(){
+    methods: {
+        async getCartItemsOnPageLoad() {
             let response = await axios.post('/cart');
-            this.itemCount =response.data.items
+            this.itemCount = response.data.items
         }
     },
-    created(){
+    created() {
         this.getCartItemsOnPageLoad();
     }
 }

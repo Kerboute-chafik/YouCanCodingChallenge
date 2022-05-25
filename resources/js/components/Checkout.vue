@@ -7,13 +7,13 @@
                         <h3 class="box-title">Products in your cart</h3>
                         <div class="plan-selection" v-for="item in items" :key="item.id">
                             <div class="plan-data" v-if="item.name">
-                                <input id="question1" name="question" type="radio" class="with-font" value="sel" />
-                                <label for="question1">{{item.name}}</label>
+                                <input id="question1" name="question" type="radio" class="with-font" value="sel"/>
+                                <label for="question1">{{ item.name }}</label>
                                 <p class="plan-text">
-                                    Quantity: {{item.quantity}}
+                                    Quantity: {{ item.quantity }}
                                 </p>
                                 <span class="plan-price">
-                                    Price: {{item.price}}
+                                    Price: {{ item.price }}
                                 </span>
                             </div>
                         </div>
@@ -30,51 +30,60 @@
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Country:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" v-model="country" name="country" value="" />
+                                            <input type="text" class="form-control" v-model="country" name="country"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-6 col-xs-12">
                                             <strong>First Name:</strong>
-                                            <input type="text" name="first_name" v-model="firstName" class="form-control" value="" />
+                                            <input type="text" name="first_name" v-model="firstName"
+                                                   class="form-control" value=""/>
                                         </div>
                                         <div class="span1"></div>
                                         <div class="col-md-6 col-xs-12">
                                             <strong>Last Name:</strong>
-                                            <input type="text" name="last_name" v-model="lastName" class="form-control" value="" />
+                                            <input type="text" name="last_name" v-model="lastName" class="form-control"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Address:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" name="address" v-model="address" class="form-control" value="" />
+                                            <input type="text" name="address" v-model="address" class="form-control"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>City:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" name="city" v-model="city" class="form-control" value="" />
+                                            <input type="text" name="city" v-model="city" class="form-control"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>State:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" name="state" v-model="state" class="form-control" value="" />
+                                            <input type="text" name="state" v-model="state" class="form-control"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Zip / Postal Code:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" name="zip_code" v-model="zipCode" class="form-control" value="" />
+                                            <input type="text" name="zip_code" v-model="zipCode" class="form-control"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Phone Number:</strong></div>
-                                        <div class="col-md-12"><input type="text" v-model="phone" name="phone_number" class="form-control" value="" /></div>
+                                        <div class="col-md-12"><input type="text" v-model="phone" name="phone_number"
+                                                                      class="form-control" value=""/></div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Email Address:</strong></div>
-                                        <div class="col-md-12"><input type="text" v-model="email" name="email_address" class="form-control" value="" /></div>
+                                        <div class="col-md-12"><input type="text" v-model="email" name="email_address"
+                                                                      class="form-control" value=""/></div>
                                     </div>
                                 </div>
                             </div>
@@ -100,13 +109,15 @@
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Credit Card Number:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" v-model="cardNumber" class="form-control" name="car_number" value="" />
+                                            <input type="text" v-model="cardNumber" class="form-control"
+                                                   name="car_number" value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12"><strong>Card CVV:</strong></div>
                                         <div class="col-md-12">
-                                            <input type="text" v-model="cvv" class="form-control" name="car_code" value="" />
+                                            <input type="text" v-model="cvv" class="form-control" name="car_code"
+                                                   value=""/>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -165,7 +176,8 @@
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <button type="submit"
                                                     class="btn btn-primary btn-submit-fix"
-                                                    v-on:click.prevent="getUserAddress()">Place Order</button>
+                                                    v-on:click.prevent="getUserAddress()">Place Order
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -182,15 +194,15 @@
                             <div class="summary-content" v-if="summaryItem.name">
                                 <div class="summary-head">
                                     <h5 class="summary-title">
-                                        {{summaryItem.name}}
+                                        {{ summaryItem.name }}
                                     </h5></div>
                                 <div class="summary-price">
                                     <p class="summary-text">
-                                        {{summaryItem.total}} DH
+                                        {{ summaryItem.total }} DH
                                     </p>
                                     <span class="summary-small-text pull-right">
-                                        Q   {{summaryItem.quantity}} x
-                                        P   {{summaryItem.price}}
+                                        Q   {{ summaryItem.quantity }} x
+                                        P   {{ summaryItem.price }}
                                     </span>
                                 </div>
                             </div>
@@ -198,9 +210,9 @@
 
                         <div class="summary-block">
                             <div class="summary-content">
-                                <div class="summary-head"> <h5 class="summary-title">Total</h5></div>
+                                <div class="summary-head"><h5 class="summary-title">Total</h5></div>
                                 <div class="summary-price">
-                                    <p class="summary-text">{{items.totalAmount}}</p>
+                                    <p class="summary-text">{{ items.totalAmount }}</p>
                                     <span class="summary-small-text pull-right"></span>
 
                                 </div>
@@ -215,73 +227,70 @@
 </template>
 <script>
 export default {
-    data(){
+    data() {
         return {
             items: [],
-            firstName:'',
-            lastName:'',
-            address:'',
-            city:'',
-            state:'',
-            zipCode:'',
-            email:'',
-            phone:'',
-            country:'',
+            firstName: '',
+            lastName: '',
+            address: '',
+            city: '',
+            state: '',
+            zipCode: '',
+            email: '',
+            phone: '',
+            country: '',
             cardType: '',
-            expirationMonth:'',
-            expirationYear:'',
-            cvv:'',
-            cardNumber:''
+            expirationMonth: '',
+            expirationYear: '',
+            cvv: '',
+            cardNumber: ''
         }
     },
-    methods:{
-        async getCartItems(){
+    methods: {
+        async getCartItems() {
             let response = await axios.get('/checkout/get/items');
             this.items = response.data;
             console.log(this.items);
         },
-        async getUserAddress(){
-            if(this.firstName != '' && this.address != '' && this.cardNumber && this.cvv)
-            {
+        async getUserAddress() {
+            if (this.firstName != '' && this.address != '' && this.cardNumber && this.cvv) {
                 // Process payment.
                 let response = await axios.post('/process/user/payment', {
-                    'firstName':this.firstName,
-                    'lastName':this.lastName,
-                    'address':this.address,
-                    'city':this.city,
-                    'state':this.state,
-                    'zipCode':this.zipCode,
-                    'email':this.email,
-                    'phone':this.phone,
-                    'country':this.country,
+                    'firstName': this.firstName,
+                    'lastName': this.lastName,
+                    'address': this.address,
+                    'city': this.city,
+                    'state': this.state,
+                    'zipCode': this.zipCode,
+                    'email': this.email,
+                    'phone': this.phone,
+                    'country': this.country,
                     'cardType': this.cardType,
-                    'expirationMonth':this.expirationMonth,
-                    'expirationYear':this.expirationYear,
-                    'cvv':this.cvv,
-                    'cardNumber':this.cardNumber,
+                    'expirationMonth': this.expirationMonth,
+                    'expirationYear': this.expirationYear,
+                    'cvv': this.cvv,
+                    'cardNumber': this.cardNumber,
                     'amount': this.items.totalAmount,
                     'order': this.items,
                 });
 
-                if(response.data.success){
+                if (response.data.success) {
                     this.$toastr.s(response.data.success);
-                }else{
+                } else {
                     this.$toastr.e(response.data.error);
                 }
 
-                setTimeout(()=> {
-                    window.location.href= '/';
+                setTimeout(() => {
+                    window.location.href = '/';
                 }, 2500);
 
                 console.log(response.data);
-            }
-            else
-            {
+            } else {
                 this.$toastr.e('User info incomplete');
             }
         }
     },
-    created(){
+    created() {
         this.getCartItems();
     }
 }
